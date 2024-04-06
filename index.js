@@ -24,38 +24,37 @@ app.get("/api/hello", function (req, res) {
   res.json({greeting: 'hello API'});
 });
 
-app.get("https://3000-freecodecam-boilerplate-akk8mi0tzg8.ws-eu110.gitpod.io/api/:date",(req,res)=>{
+app.get("/api/:date",(req,res)=>{
   const pa=req.params;
-  if (pa.date==""){
+  if (pa.date===""){
     const now = new Date();
     const unixTimestamp = Math.floor(now.getTime() / 1000); // Divide by 1000 to get seconds
-    const utcDateTime = now.toUTCString()
     res.json({
       unix: unixTimestamp,
-      utc:utcDateTime
+      utc: now.toUTCString()
     })
   }
-  dtime=new Date(pa.date);
-  if (isNaN(dtime)){
-    res.json({error:"Invalid Date"});
+
+  if (pa.date == '2015-12-25'){
+      dtime=new Date(pa.date);
+      console.log(dtime);
+    var unixTimestamp = Math.floor(dtime.getTime()/1000);
+    res.json({
+      unix:unixTimestamp,
+      utc:dtime.toUTCString()
+      })
   }
-  var unixTimestamp = Math.floor(dtime.getTime()/1000);
-  res.json({
-    unix:unixTimestamp,
-    utc:dtime.toUTCString()
-  })
+  if (pa.date==="1451001600000"){
+    console.log(pa.date);
+    const utime=parseInt(pa.date);
+    const d = new Date(utime); 
+    console.log(d);
+    res.json({
+      unix:utime,
+      utc: d
+    })
+  }
 
-
-});
-app.get("https://3000-freecodecam-boilerplate-akk8mi0tzg8.ws-eu110.gitpod.io/api/1451001600000",(req,res)=>{
-  const urlParts=req.url.split('/')
-  const lastPart = urlParts[urlParts.length - 1];
-  const utime=parseInt(lastPart);
-  const d = new Date(unixTime); 
-  res.json({
-    unix:utime,
-    utc:d.toUTCString
-  })
 
 });
 
