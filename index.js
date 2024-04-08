@@ -24,43 +24,34 @@ app.get("/api/hello", function (req, res) {
   res.json({greeting: 'hello API'});
 });
 
-
-app.get("/api/:date",(req,res)=>{
-  const pa=req.params;
-
-  if (pa.date.includes("-",4)){
-      dtime=new Date(pa.date);
-      if (isNaN(dtime)){
-        res.json({
-          error:"Invalid Date"
-        })
-      }
-    var unixTimestamp = dtime.getTime();
-    res.json({
-      unix:unixTimestamp,
-      utc:dtime.toUTCString()
-      })
-  }
-  if (!pa.date.includes("-",0)){
-    const utime=parseInt(pa.date);
-    const d = new Date(utime); 
-    if (isNaN(d)){
-      res.json({
-        error:"Invalid Date"
-      })
-    }
-    res.json({
-      unix:utime,
-      utc: d.toUTCString()
-    })
-  }
-
-
-});
 app.get("/api/", function(req, res) {
   var resDate = new Date();
   res.json({ unix: resDate.valueOf(), utc: resDate.toUTCString() });
 });
+
+app.get("/api/:date_string", (req, res) => {
+  let dateString = req.params.date_string;
+  if (!dateString){
+    var resDate = new Date();
+    res.json({ unix: resDate.valueOf(), utc: resDate.toUTCString() });
+  }
+  //A 4 digit number is a valid ISO-8601 for the beginning of that year
+  //5 digits or more must be a unix time, until we reach a year 10,000 problem
+  if (/\d{5,}/.test(dateString)) {
+    let dateInt = parseInt(dateString);
+    //Date regards numbers as unix timestamps, strings are processed differently
+    res.json({ unix: dateInt, utc: new Date(dateInt).toUTCString() });
+  } else {
+    let dateObject = new Date(dateString);
+
+    if (dateObject.toString() === "Invalid Date") {
+      res.json({ error: "Invalid Date" });
+    } else {
+      res.json({ unix: dateObject.valueOf(), utc: dateObject.toUTCString() });
+    }
+  }
+});
+
 
 // Listen on port set in environment variable or default to 3000
 var listener = app.listen(process.env.PORT || 3000, function () {
