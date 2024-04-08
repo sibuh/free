@@ -47,11 +47,11 @@ app.get("/api/:date",(req,res)=>{
   if (!pa.date.includes("-",0)){
     console.log(pa.date);
     const utime=parseInt(pa.date);
-    const d = new Date(utime*1000); 
+    const d = new Date(utime); 
     console.log(d);
     res.json({
-      unix:utime,
-      utc: d
+      unix:utime/1000,
+      utc: d.toUTCString()
     })
   }else{
     res.json({
