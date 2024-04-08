@@ -28,7 +28,7 @@ app.get("/api/:date",(req,res)=>{
   const pa=req.params;
   if (pa.date===""){
     const now = new Date();
-    const unixTimestamp = Math.floor(now.getTime() / 1000); // Divide by 1000 to get seconds
+    const unixTimestamp = Math.floor(now.getTime()); // Divide by 1000 to get seconds
     res.json({
       unix: unixTimestamp,
       utc: now.toUTCString()
@@ -38,7 +38,7 @@ app.get("/api/:date",(req,res)=>{
   if (pa.date.includes("-",4)){
       dtime=new Date(pa.date);
       console.log(dtime);
-    var unixTimestamp = Math.floor(dtime.getTime()/1000);
+    var unixTimestamp = dtime.getTime();
     res.json({
       unix:unixTimestamp,
       utc:dtime.toUTCString()
@@ -50,12 +50,12 @@ app.get("/api/:date",(req,res)=>{
     const d = new Date(utime); 
     console.log(d);
     res.json({
-      unix:utime/1000,
+      unix:utime,
       utc: d.toUTCString()
     })
   }else{
     res.json({
-      "error":"Invalid Date"
+      error:"Invalid Date"
     })
   }
 
