@@ -23,21 +23,28 @@ app.get("/", function (req, res) {
 app.get("/api/hello", function (req, res) {
   res.json({greeting: 'hello API'});
 });
+app.get("/api/", function(req, res) {
+  var resDate = new Date();
+  res.json({ unix: resDate.valueOf(), utc: resDate.toUTCString() });
+});
 
 app.get("/api/:date",(req,res)=>{
   const pa=req.params;
-  if (pa.date===""){
+  if (!pa.date){
     const now = new Date();
-    const unixTimestamp = Math.floor(now.getTime()); // Divide by 1000 to get seconds
     res.json({
-      unix: unixTimestamp,
+      unix: now.getTime()/1000,
       utc: now.toUTCString()
     })
   }
 
   if (pa.date.includes("-",4)){
       dtime=new Date(pa.date);
-      console.log(dtime);
+      if (isNaN(dtime)){
+        res.json({
+          error:"Invalid Date"
+        })
+      }
     var unixTimestamp = dtime.getTime();
     res.json({
       unix:unixTimestamp,
@@ -45,23 +52,21 @@ app.get("/api/:date",(req,res)=>{
       })
   }
   if (!pa.date.includes("-",0)){
-    console.log(pa.date);
     const utime=parseInt(pa.date);
     const d = new Date(utime); 
-    console.log(d);
+    if (isNaN(d)){
+      res.json({
+        error:"Invalid Date"
+      })
+    }
     res.json({
       unix:utime,
       utc: d.toUTCString()
-    })
-  }else{
-    res.json({
-      error:"Invalid Date"
     })
   }
 
 
 });
-
 
 // Listen on port set in environment variable or default to 3000
 var listener = app.listen(process.env.PORT || 3000, function () {
