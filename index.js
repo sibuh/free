@@ -35,7 +35,7 @@ app.get("/api/:date",(req,res)=>{
     })
   }
 
-  if (pa.date == '2015-12-25'){
+  if (pa.date.includes("-",4)){
       dtime=new Date(pa.date);
       console.log(dtime);
     var unixTimestamp = Math.floor(dtime.getTime()/1000);
@@ -44,14 +44,18 @@ app.get("/api/:date",(req,res)=>{
       utc:dtime.toUTCString()
       })
   }
-  if (pa.date==="1451001600000"){
+  if (!pa.date.includes("-",0)){
     console.log(pa.date);
     const utime=parseInt(pa.date);
-    const d = new Date(utime); 
+    const d = new Date(utime*1000); 
     console.log(d);
     res.json({
       unix:utime,
       utc: d
+    })
+  }else{
+    res.json({
+      "error":"Invalid Date"
     })
   }
 
